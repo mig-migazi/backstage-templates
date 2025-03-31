@@ -41,8 +41,8 @@ spec:
       input:
         url: https://github.com/mig-migazi/backstage-templates/tree/main/templates/mosquitto-template
         values:
-        deployment_name: ${{ parameters.deployment_name }}
-        mqtt_port: ${{ parameters.mqtt_port }}
+          deployment_name: ${{ parameters.deployment_name }}
+          mqtt_port: ${{ parameters.mqtt_port }}
 
     - id: deploy
       name: Deploy to Remote Host
