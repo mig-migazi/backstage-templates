@@ -5,7 +5,7 @@ metadata:
   description: Deployment templates catalog
 spec:
   targets:
-    - https://github.com/mig-migazi/backstage-templates/templates/mosquitto-template/template.yaml
+    - https://raw.githubusercontent.com/mig-migazi/backstage-templates/main/templates/mosquitto-template/template.yaml
   rules:
     - allowKind: [Template]
 
