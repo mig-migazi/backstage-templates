@@ -6,4 +6,6 @@ metadata:
 spec:
   targets:
     - ./templates/mosquitto-template/template.yaml
+  rules:
+    - allowKind: [Template]
 
