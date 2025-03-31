@@ -1,0 +1,46 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: mosquitto-mqtt
+  title: Mosquitto MQTT Broker
+  description: Deploy a Mosquitto MQTT broker using Docker Compose
+spec:
+  owner: your-team
+  type: service
+
+  parameters:
+    - title: Mosquitto Deployment Details
+      required:
+        - deployment_name
+        - mqtt_port
+      properties:
+        deployment_name:
+          title: Deployment Name
+          type: string
+          description: Name for your deployment instance
+        mqtt_port:
+          title: MQTT Port
+          type: number
+          default: 1883
+          description: Port to expose MQTT broker
+
+  steps:
+    - id: fetch-template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          deployment_name: ${{ parameters.deployment_name }}
+          mqtt_port: ${{ parameters.mqtt_port }}
+
+    - id: publish
+      action: publish:github
+      input:
+        repoUrl: github.com?owner=<mig-migazi>&repo=${{ parameters.deployment_name }}
+        defaultBranch: main
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+
