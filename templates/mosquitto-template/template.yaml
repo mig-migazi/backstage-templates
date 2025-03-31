@@ -13,6 +13,7 @@ spec:
       required:
         - deployment_name
         - mqtt_port
+        - remote_host
       properties:
         deployment_name:
           title: Deployment Name
@@ -23,9 +24,19 @@ spec:
           type: number
           default: 1883
           description: Port to expose MQTT broker
+        remote_host:
+          title: Remote Host
+          type: string
+          description: IP or hostname of the remote PC
+        ssh_user:
+          title: SSH Username
+          type: string
+          default: root
+          description: SSH username to connect to the remote host
 
   steps:
     - id: fetch-template
+      name: Fetch Template Files
       action: fetch:template
       input:
         url: ./skeleton
@@ -33,14 +44,13 @@ spec:
           deployment_name: ${{ parameters.deployment_name }}
           mqtt_port: ${{ parameters.mqtt_port }}
 
-    - id: publish
-      action: publish:github
+    - id: deploy
+      name: Deploy to Remote Host
+      action: shell:script
       input:
-        repoUrl: github.com?owner=<mig-migazi>&repo=${{ parameters.deployment_name }}
-        defaultBranch: main
-
-  output:
-    links:
-      - title: Repository
-        url: ${{ steps.publish.output.remoteUrl }}
-
+        script: |
+          scp -r ./ ${{ parameters.ssh_user }}@${{ parameters.remote_host }}:~/mosquitto-${{ parameters.deployment_name }}
+          ssh ${{ parameters.ssh_user }}@${{ parameters.remote_host }} << 'EOF'
+            cd ~/mosquitto-${{ parameters.deployment_name }}
+            docker compose up -d
+          EOF
